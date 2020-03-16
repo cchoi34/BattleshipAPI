@@ -1,4 +1,5 @@
 ﻿using BattleshipGoogleCloud.Models;
+using System;
 using System.Linq;
 
 namespace BattleshipGoogleCloud.Extensions
@@ -6,6 +7,12 @@ namespace BattleshipGoogleCloud.Extensions
     public static class GameExtensions
     {
         private static string _playerName = "Choiboi";
+
+        private static bool checkReconCoordinates = false;
+
+        private static int positiveReconX = 0;
+
+        private static int positiveReconY = 0;
 
         public static Order GetNextOrder(this Game game)
         {
@@ -23,6 +30,27 @@ namespace BattleshipGoogleCloud.Extensions
                 return new Order { Coordinate = playerToTarget.StartCoordinate, PlayerTargeted = playerToTarget.PlayerName, Type = OrderType.Attack };
             }
 
+            var targetCoordinate = getReconCoordinates(playerToTarget, lastOrder);
+
+            if (lastOrder.Result == OrderResult.ShipFound)
+            {
+                checkReconCoordinates = true;
+                positiveReconX = lastOrder.Coordinate.X;
+                positiveReconY = lastOrder.Coordinate.Y;
+            }
+
+            if (checkReconCoordinates)
+            {
+                targetCoordinate = getAttackCoordinates(playerToTarget, lastOrder, positiveReconX, positiveReconY);
+            }
+
+
+            return new Order { Coordinate = targetCoordinate, PlayerTargeted = playerToTarget.PlayerName, Type = OrderType.Attack };
+        }
+
+
+        public static Coordinate getAttackCoordinates(PlayerInfo playerToTarget, Order lastOrder, int startX, int startY)
+        {
             var xStart = playerToTarget.StartCoordinate.X;
             var xLimit = playerToTarget.EndCoordinate.X;
 
@@ -35,32 +63,19 @@ namespace BattleshipGoogleCloud.Extensions
                 currentY += 1;
             }
 
-            var attackCoordinate = new Coordinate(currentX, currentY);
-
-            return new Order { Coordinate = attackCoordinate, PlayerTargeted = playerToTarget.PlayerName, Type = OrderType.Attack };
+            return new Coordinate(currentX, currentY);
         }
 
-        public static Order GetNextRecon(this Game game)
+        public static Coordinate getReconCoordinates(PlayerInfo playerToTarget, Order lastOrder)
         {
-            var playerToRecon = game.GameInfo.Players.FirstOrDefault(player => player.PlayerName != _playerName && !player.FleetSunk);
+            var xStart = playerToTarget.StartCoordinate.X;
+            var xLimit = playerToTarget.EndCoordinate.X;
+            var targetCoordinate = new Coordinate();
 
-            if (playerToRecon == null)
+            if (lastOrder.Result == OrderResult.ShipFound)
             {
-                return new Order { Coordinate = new Coordinate(), Type = OrderType.Recon };
+                  
             }
-
-            var lastOrder = game.Orders?.LastOrDefault();
-
-            if (lastOrder == null || lastOrder.PlayerTargeted != playerToRecon.PlayerName)
-            {
-                return new Order { Coordinate = playerToRecon.StartCoordinate, PlayerTargeted = playerToRecon.PlayerName, Type = OrderType.Recon };
-            }
-
-            var xStart = playerToRecon.StartCoordinate.X;
-            var xLimit = playerToRecon.EndCoordinate.X;
-
-            var yStart = playerToRecon.StartCoordinate.Y;
-            var yLimit = playerToRecon.EndCoordinate.Y;
 
             var currentX = lastOrder.Coordinate.X + 3;
             var currentY = lastOrder.Coordinate.Y;
@@ -71,9 +86,8 @@ namespace BattleshipGoogleCloud.Extensions
                 currentY += 3;
             }
 
-            var reconCoordinate = new Coordinate(currentX, currentY);
 
-            return new Order { Coordinate = reconCoordinate, PlayerTargeted = playerToRecon.PlayerName, Type = OrderType.Recon };
+            return new Coordinate(currentX, currentY);
         }
     }
 }

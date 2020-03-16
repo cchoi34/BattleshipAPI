@@ -13121,11 +13121,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Christopher.Choi\\Downloads\\BattleshipGoogleCloud\\BattleshipGoogleCloud\\BattleshipGoogleCloud.csproj",
+      "projectUniqueName": "C:\\Users\\Christopher.Choi\\Documents\\Practice\\ChoiboiBattleship\\BattleshipGoogleCloud.csproj",
       "projectName": "BattleshipGoogleCloud",
-      "projectPath": "C:\\Users\\Christopher.Choi\\Downloads\\BattleshipGoogleCloud\\BattleshipGoogleCloud\\BattleshipGoogleCloud.csproj",
+      "projectPath": "C:\\Users\\Christopher.Choi\\Documents\\Practice\\ChoiboiBattleship\\BattleshipGoogleCloud.csproj",
       "packagesPath": "C:\\Users\\Christopher.Choi\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Christopher.Choi\\Downloads\\BattleshipGoogleCloud\\BattleshipGoogleCloud\\obj\\",
+      "outputPath": "C:\\Users\\Christopher.Choi\\Documents\\Practice\\ChoiboiBattleship\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Microsoft\\Xamarin\\NuGet\\"

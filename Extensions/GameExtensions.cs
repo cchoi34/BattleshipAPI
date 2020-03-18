@@ -29,8 +29,8 @@ namespace BattleshipGoogleCloud.Extensions
                 return new Order { Coordinate = playerToTarget.StartCoordinate, PlayerTargeted = playerToTarget.PlayerName, Type = OrderType.Attack };
             }
 
-            Console.Write("HELLO DOES THIS WORK?");
             var nextOrderType = "attack";
+
             /*if (lastOrder.Result) 
             {
                 nextOrderType = "recon";
@@ -46,10 +46,10 @@ namespace BattleshipGoogleCloud.Extensions
 
             var targetCoordinate = getNextCoordinates(nextOrderType, playerToTarget, lastOrder);
 
-            if (nextOrderType == "recon") 
+            /* if (nextOrderType == "recon") 
             {
                 return new Order { Coordinate = targetCoordinate, PlayerTargeted = playerToTarget.PlayerName, Type = OrderType.Recon };
-            }
+            } */
 
             if (nextOrderType == "attack") 
             {
@@ -69,7 +69,6 @@ namespace BattleshipGoogleCloud.Extensions
             /*var xReconStart = recentRecon.X;
             var xReconEnd = recentRecon.X + 3;
             var yReconEnd = recentRecon.Y + 3; */
-
 
             var currentX = lastOrder.Coordinate.X;
             var currentY = lastOrder.Coordinate.Y;

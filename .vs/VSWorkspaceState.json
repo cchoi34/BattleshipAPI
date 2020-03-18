@@ -1,6 +1,11 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\Controllers",
+    "\\Extensions",
+    "\\Models",
+    "\\Properties",
+    "\\Services"
   ],
   "SelectedNode": "\\BattleshipGoogleCloud.sln",
   "PreviewInSolutionExplorer": false

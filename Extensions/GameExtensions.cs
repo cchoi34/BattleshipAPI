@@ -1,6 +1,7 @@
 ﻿using BattleshipGoogleCloud.Models;
 using System;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace BattleshipGoogleCloud.Extensions
 {
@@ -8,11 +9,9 @@ namespace BattleshipGoogleCloud.Extensions
     {
         private static string _playerName = "Choiboi";
 
-        private static bool checkReconCoordinates = false;
+        private static List<Coordinate> coordinatesHit = new List<Coordinate>();
 
-        private static int positiveReconX = 0;
-
-        private static int positiveReconY = 0;
+        private static bool finishOff = false;
 
         public static Order GetNextOrder(this Game game)
         {
@@ -30,64 +29,117 @@ namespace BattleshipGoogleCloud.Extensions
                 return new Order { Coordinate = playerToTarget.StartCoordinate, PlayerTargeted = playerToTarget.PlayerName, Type = OrderType.Attack };
             }
 
-            var targetCoordinate = getReconCoordinates(playerToTarget, lastOrder);
-
-            if (lastOrder.Result == OrderResult.ShipFound)
+            Console.Write("HELLO DOES THIS WORK?");
+            var nextOrderType = "attack";
+            /*if (lastOrder.Result) 
             {
-                checkReconCoordinates = true;
-                positiveReconX = lastOrder.Coordinate.X;
-                positiveReconY = lastOrder.Coordinate.Y;
+                nextOrderType = "recon";
+            } 
+            if (lastOrder.Result.Equals(OrderResult.ShipFound))
+            {
+                nextOrderType = "attack";
+                if (lastOrder.Type == OrderType.Recon) {
+                    //recentRecon = new Coordinate(lastOrder.Coordinate.X, lastOrder.Coordinate.Y);
+                }
+            } */
+
+
+            var targetCoordinate = getNextCoordinates(nextOrderType, playerToTarget, lastOrder);
+
+            if (nextOrderType == "recon") 
+            {
+                return new Order { Coordinate = targetCoordinate, PlayerTargeted = playerToTarget.PlayerName, Type = OrderType.Recon };
             }
 
-            if (checkReconCoordinates)
+            if (nextOrderType == "attack") 
             {
-                targetCoordinate = getAttackCoordinates(playerToTarget, lastOrder, positiveReconX, positiveReconY);
+                return new Order { Coordinate = targetCoordinate, PlayerTargeted = playerToTarget.PlayerName, Type = OrderType.Attack };
             }
 
-
-            return new Order { Coordinate = targetCoordinate, PlayerTargeted = playerToTarget.PlayerName, Type = OrderType.Attack };
+            return new Order { Coordinate = targetCoordinate, PlayerTargeted = playerToTarget.PlayerName, Type = OrderType.Recon };
         }
 
 
-        public static Coordinate getAttackCoordinates(PlayerInfo playerToTarget, Order lastOrder, int startX, int startY)
-        {
+        public static Coordinate getNextCoordinates(string type, PlayerInfo playerToTarget, Order lastOrder) {
             var xStart = playerToTarget.StartCoordinate.X;
             var xLimit = playerToTarget.EndCoordinate.X;
+            var yStart = playerToTarget.StartCoordinate.Y;
+            var yLimit = playerToTarget.EndCoordinate.Y;
 
-            var currentX = lastOrder.Coordinate.X + 1;
+            /*var xReconStart = recentRecon.X;
+            var xReconEnd = recentRecon.X + 3;
+            var yReconEnd = recentRecon.Y + 3; */
+
+
+            var currentX = lastOrder.Coordinate.X;
             var currentY = lastOrder.Coordinate.Y;
 
-            if (currentX > xLimit)
+           /*if (lastOrder.Result.Equals(OrderResult.ShipHit)) 
             {
-                currentX = xStart;
-                currentY += 1;
+                currentX -= 1;
+            } */
+
+            if (type == "attack" && !finishOff) 
+            {
+                currentX += 2;
+
+                if (currentX > xLimit) 
+                {
+                    currentY += 1;
+                    currentX = xStart + (currentY % 2);
+
+                    if (currentY > yLimit && !playerToTarget.FleetSunk)
+                    {
+                        finishOff = true;
+                    }
+                }
+                
+                /* if (currentX > xReconEnd) 
+                {
+                    currentX = xReconStart + (currentY % 2);
+                    currentY += 1;
+                    if (currentY == yReconEnd) {
+                        resetRecentRecon();
+                    }
+                } */
+            }
+
+            if (finishOff && currentY > yLimit)
+            {
+                currentY = yStart;
+                currentX = xStart - 1; // offset attacks so they attack every grid not hit previously
+            }
+
+            if (type == "attack" && finishOff)
+            {
+                currentX += 2;
+
+                if (currentX > xLimit)
+                {
+                    currentY += 1;
+                    currentX = xStart + (1 - (currentY % 2));
+                }
+            }
+
+            if (type == "recon")
+            {
+                currentX += 3;
+                
+                if (currentX > xLimit) 
+                {
+                    currentX = xStart;
+                    currentY += 3;
+                }
             }
 
             return new Coordinate(currentX, currentY);
-        }
+        } 
 
-        public static Coordinate getReconCoordinates(PlayerInfo playerToTarget, Order lastOrder)
-        {
-            var xStart = playerToTarget.StartCoordinate.X;
-            var xLimit = playerToTarget.EndCoordinate.X;
-            var targetCoordinate = new Coordinate();
-
-            if (lastOrder.Result == OrderResult.ShipFound)
-            {
-                  
-            }
-
-            var currentX = lastOrder.Coordinate.X + 3;
-            var currentY = lastOrder.Coordinate.Y;
-
-            if (currentX > xLimit)
-            {
-                currentX = xStart;
-                currentY += 3;
-            }
-
-
-            return new Coordinate(currentX, currentY);
-        }
+        /* public static void resetRecentRecon() {
+            startNewRecon = true;
+            recentRecon = new Coordinate();
+            nextOrderType = "recon";
+        } */
     }
+
 }

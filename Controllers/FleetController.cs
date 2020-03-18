@@ -24,7 +24,7 @@ namespace BattleshipGoogleCloud.Controllers
             fleet.PTBoat.PositionRelative = new Coordinate(15, 8);
             fleet.PTBoat.Orientation = ShipOrientation.Vertical;
 
-            fleet.Submarine.PositionRelative = new Coordinate(4, 16);
+            fleet.Submarine.PositionRelative = new Coordinate(6, 16);
             fleet.Submarine.Orientation = ShipOrientation.Vertical;
 
             return Ok(fleet);
